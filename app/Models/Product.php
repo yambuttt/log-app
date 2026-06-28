@@ -13,7 +13,13 @@ class Product extends Model
         'name',
         'sku',
         'weight_kg',
+        'minimum_stock',
         'is_active',
+    ];
+
+    protected $casts = [
+        'minimum_stock' => 'float',
+        'is_active' => 'boolean',
     ];
 
     public function unit(): BelongsTo

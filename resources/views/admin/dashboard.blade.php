@@ -2,6 +2,39 @@
 
 @section('content')
 <div class="space-y-6">
+    @if ($lowStocks->isNotEmpty())
+        <section class="animate-fade-up">
+            <div class="rounded-[28px] border border-amber-200 bg-amber-50/70 p-6 shadow-lg shadow-amber-100/30 backdrop-blur-xl">
+                <div class="flex items-start gap-4">
+                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-100 text-2xl">
+                        ⚠️
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-bold text-amber-900">Peringatan: Stok Menipis!</h3>
+                        <p class="mt-1 text-sm text-amber-700">Beberapa barang telah menyentuh atau berada di bawah batas minimum stok. Segera refill untuk mencegah kehabisan stok!</p>
+                        
+                        <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                            @foreach ($lowStocks as $stock)
+                                <div class="rounded-2xl border border-amber-200/60 bg-white p-4 shadow-sm transition hover:shadow-md">
+                                    <p class="font-bold text-slate-900">{{ $stock->product->name }}</p>
+                                    <p class="text-xs text-slate-500 mt-1">Gudang: {{ $stock->warehouse->name }}</p>
+                                    <div class="mt-3 flex items-center justify-between">
+                                        <span class="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700">
+                                            Stok: {{ rtrim(rtrim(number_format($stock->qty, 2, '.', ''), '0'), '.') }} {{ $stock->product->unit->symbol ?? '' }}
+                                        </span>
+                                        <span class="text-xs font-semibold text-slate-500">
+                                            Min: {{ rtrim(rtrim(number_format($stock->product->minimum_stock, 2, '.', ''), '0'), '.') }}
+                                        </span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    @endif
+
     <section class="animate-fade-up">
         <div class="overflow-hidden rounded-[28px] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 px-6 py-8 text-white shadow-2xl shadow-slate-900/20 sm:px-8 lg:px-10">
             <div class="grid items-center gap-8 lg:grid-cols-[1.5fr_1fr]">
@@ -15,42 +48,42 @@
                     <p class="mt-4 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
                         Pantau stok barang, aktivitas gudang, dan pengiriman dalam satu dashboard yang cepat, rapi, dan mudah digunakan.
                     </p>
-
+ 
                     <div class="mt-6 flex flex-wrap gap-3">
-                        <a href="#"
+                        <a href="{{ route('admin.products.index') }}"
                            class="inline-flex items-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-100">
                             Kelola Barang
                         </a>
-
-                        <a href="#"
+ 
+                        <a href="{{ route('admin.delivery-trips.index') }}"
                            class="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15">
                             Lihat Pengiriman
                         </a>
                     </div>
                 </div>
-
+ 
                 <div class="grid grid-cols-2 gap-4">
                     <div class="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur animate-soft-float">
                         <p class="text-sm text-slate-300">Total Produk</p>
-                        <h3 class="mt-2 text-3xl font-bold">248</h3>
-                        <p class="mt-1 text-xs text-emerald-300">+12 bulan ini</p>
+                        <h3 class="mt-2 text-3xl font-bold">{{ $totalProducts }}</h3>
+                        <p class="mt-1 text-xs text-emerald-300">Di master data</p>
                     </div>
-
+ 
                     <div class="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
                         <p class="text-sm text-slate-300">Stok Menipis</p>
-                        <h3 class="mt-2 text-3xl font-bold">18</h3>
+                        <h3 class="mt-2 text-3xl font-bold">{{ $lowStockCount }}</h3>
                         <p class="mt-1 text-xs text-amber-300">Perlu restock</p>
                     </div>
-
+ 
                     <div class="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
                         <p class="text-sm text-slate-300">Pesanan Hari Ini</p>
-                        <h3 class="mt-2 text-3xl font-bold">36</h3>
+                        <h3 class="mt-2 text-3xl font-bold">{{ $ordersTodayCount }}</h3>
                         <p class="mt-1 text-xs text-cyan-300">Aktivitas berjalan</p>
                     </div>
-
+ 
                     <div class="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur animate-soft-float">
                         <p class="text-sm text-slate-300">Driver Aktif</p>
-                        <h3 class="mt-2 text-3xl font-bold">9</h3>
+                        <h3 class="mt-2 text-3xl font-bold">{{ $activeDriversCount }}</h3>
                         <p class="mt-1 text-xs text-fuchsia-300">Sedang bertugas</p>
                     </div>
                 </div>

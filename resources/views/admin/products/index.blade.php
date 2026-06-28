@@ -38,6 +38,7 @@
                         <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">SKU</th>
                         <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Satuan</th>
                         <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Berat</th>
+                        <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Min. Stok</th>
                         <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Status</th>
                         <th class="px-4 py-2 text-right text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Aksi</th>
                     </tr>
@@ -56,6 +57,9 @@
                             </td>
                             <td class="px-4 py-4 text-sm text-slate-600">
                                 {{ $product->weight_kg ? rtrim(rtrim(number_format($product->weight_kg, 2, '.', ''), '0'), '.') . ' Kg' : '-' }}
+                            </td>
+                            <td class="px-4 py-4 text-sm text-slate-600">
+                                {{ $product->minimum_stock ? rtrim(rtrim(number_format($product->minimum_stock, 2, '.', ''), '0'), '.') : '0' }} {{ $product->unit->symbol ?? '' }}
                             </td>
                             <td class="px-4 py-4">
                                 @if ($product->is_active)
@@ -79,7 +83,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-10 text-center text-sm text-slate-500">
+                            <td colspan="7" class="px-4 py-10 text-center text-sm text-slate-500">
                                 Belum ada data barang.
                             </td>
                         </tr>

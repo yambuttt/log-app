@@ -72,7 +72,25 @@
         @enderror
     </div>
 
-    <div class="flex items-center">
+    <div>
+        <label for="minimum_stock" class="mb-2 block text-sm font-semibold text-slate-700">
+            Minimum Stok
+        </label>
+        <input
+            type="number"
+            step="0.01"
+            id="minimum_stock"
+            name="minimum_stock"
+            value="{{ old('minimum_stock', $product->minimum_stock ?? 10) }}"
+            class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-slate-900 focus:ring-4 focus:ring-slate-200"
+            placeholder="Contoh: 10"
+        >
+        @error('minimum_stock')
+            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <div class="flex items-end pb-3">
         <label class="inline-flex items-center gap-3 text-sm font-medium text-slate-700">
             <input
                 type="checkbox"

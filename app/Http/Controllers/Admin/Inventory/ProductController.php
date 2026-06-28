@@ -34,6 +34,7 @@ class ProductController extends Controller
             'sku' => ['required', 'string', 'max:255', 'unique:products,sku'],
             'unit_id' => ['required', 'exists:units,id'],
             'weight_kg' => ['nullable', 'numeric', 'min:0'],
+            'minimum_stock' => ['nullable', 'numeric', 'min:0'],
             'is_active' => ['nullable', 'boolean'],
         ], [
             'name.required' => 'Nama barang wajib diisi.',
@@ -42,9 +43,11 @@ class ProductController extends Controller
             'unit_id.required' => 'Satuan wajib dipilih.',
             'unit_id.exists' => 'Satuan tidak valid.',
             'weight_kg.numeric' => 'Berat harus berupa angka.',
+            'minimum_stock.numeric' => 'Minimum stok harus berupa angka.',
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
+        $validated['minimum_stock'] = $request->input('minimum_stock') !== null ? $request->input('minimum_stock') : 10;
 
         Product::create($validated);
 
@@ -67,6 +70,7 @@ class ProductController extends Controller
             'sku' => ['required', 'string', 'max:255', 'unique:products,sku,' . $product->id],
             'unit_id' => ['required', 'exists:units,id'],
             'weight_kg' => ['nullable', 'numeric', 'min:0'],
+            'minimum_stock' => ['nullable', 'numeric', 'min:0'],
             'is_active' => ['nullable', 'boolean'],
         ], [
             'name.required' => 'Nama barang wajib diisi.',
@@ -75,9 +79,11 @@ class ProductController extends Controller
             'unit_id.required' => 'Satuan wajib dipilih.',
             'unit_id.exists' => 'Satuan tidak valid.',
             'weight_kg.numeric' => 'Berat harus berupa angka.',
+            'minimum_stock.numeric' => 'Minimum stok harus berupa angka.',
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
+        $validated['minimum_stock'] = $request->input('minimum_stock') !== null ? $request->input('minimum_stock') : 10;
 
         $product->update($validated);
 
