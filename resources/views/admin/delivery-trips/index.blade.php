@@ -48,6 +48,11 @@
                                 ⛽ {{ $trip->fuel_consumed_liters }} Liter
                             </span>
                         </div>
+
+                        <a href="{{ route('delivery-trips.print-all-surat-jalan', $trip->id) }}" target="_blank"
+                           class="mt-2 inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-slate-800 transition">
+                            🖨️ Print Semua Surat Jalan
+                        </a>
                     </div>
                 </div>
 
@@ -76,9 +81,15 @@
                                 {{ $shipment->order->customer_name ?? '-' }}
                                 <span class="text-slate-400 text-xs ml-2">({{ $shipment->order->delivery_address ?? '-' }})</span>
                             </div>
-                            <span class="text-xs font-semibold text-slate-500">
-                                {{ $shipment->pivot->route_order === 1 ? 'dari gudang' : 'dari titik sebelumnya' }}: {{ $shipment->pivot->distance_from_previous_km }} km
-                            </span>
+                            <div class="flex items-center gap-4">
+                                <span class="text-xs font-semibold text-slate-500">
+                                    {{ $shipment->pivot->route_order === 1 ? 'dari gudang' : 'dari titik sebelumnya' }}: {{ $shipment->pivot->distance_from_previous_km }} km
+                                </span>
+                                <a href="{{ route('shipments.print-surat-jalan', $shipment->id) }}" target="_blank"
+                                   class="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 transition">
+                                    🖨️ Print Surat Jalan
+                                </a>
+                            </div>
                         </div>
                     @endforeach
                 </div>

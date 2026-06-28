@@ -41,19 +41,31 @@
                         </p>
                     </div>
 
-                    <div class="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-700">
-                        {{ ucfirst($trip->status) }}
+                    <div class="flex flex-col items-end gap-2">
+                        <div class="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-700">
+                            {{ ucfirst($trip->status) }}
+                        </div>
+                        <a href="{{ route('delivery-trips.print-all-surat-jalan', $trip->id) }}" target="_blank"
+                           class="mt-2 inline-flex items-center gap-1.5 rounded-xl bg-emerald-900 px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-emerald-800 transition">
+                            🖨️ Print Semua Surat Jalan
+                        </a>
                     </div>
                 </div>
 
                 <div class="mt-5 space-y-2">
                     @foreach ($trip->shipments as $shipment)
-                        <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
-                            <span class="font-semibold">Stop {{ $shipment->pivot->route_order }}</span>
-                            — {{ $shipment->order->customer_name ?? '-' }}
-                            <span class="text-slate-500">
-                                ({{ $shipment->pivot->route_order === 1 ? 'dari gudang' : 'dari titik sebelumnya' }}: {{ $shipment->pivot->distance_from_previous_km }} km)
-                            </span>
+                        <div class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
+                            <div>
+                                <span class="font-semibold">Stop {{ $shipment->pivot->route_order }}</span>
+                                — {{ $shipment->order->customer_name ?? '-' }}
+                                <span class="text-slate-500">
+                                    ({{ $shipment->pivot->route_order === 1 ? 'dari gudang' : 'dari titik sebelumnya' }}: {{ $shipment->pivot->distance_from_previous_km }} km)
+                                </span>
+                            </div>
+                            <a href="{{ route('shipments.print-surat-jalan', $shipment->id) }}" target="_blank"
+                               class="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 transition">
+                                🖨️ Print Surat Jalan
+                            </a>
                         </div>
                     @endforeach
                 </div>

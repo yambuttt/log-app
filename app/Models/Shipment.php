@@ -23,6 +23,27 @@ class Shipment extends Model
         'google_maps_url',
     ];
 
+    protected static function booted(): void
+    {
+        static::updated(function (Shipment $shipment) {
+            if ($shipment->isDirty('status') && $shipment->status === 'on_delivery') {
+                $inventoryService = app(\App\Services\InventoryService::class);
+                foreach ($shipment->items as $item) {
+                    $inventoryService->stockOut([
+                        'transaction_date' => now()->toDateString(),
+                        'warehouse_id' => $shipment->warehouse_id,
+                        'product_id' => $item->product_id,
+                        'qty' => $item->qty,
+                        'reference_type' => Shipment::class,
+                        'reference_id' => $shipment->id,
+                        'notes' => 'Pengiriman barang untuk shipment #' . $shipment->shipment_number,
+                        'created_by' => auth()->id() ?? $shipment->created_by,
+                    ]);
+                }
+            }
+        });
+    }
+
     public function warehouse(): BelongsTo
     {
         return $this->belongsTo(Warehouse::class);

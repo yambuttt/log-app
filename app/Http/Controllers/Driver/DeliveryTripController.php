@@ -33,9 +33,11 @@ class DeliveryTripController extends Controller
         ]);
 
         // Update all shipments in this trip to 'on_delivery'
-        $deliveryTrip->shipments()->update([
-            'status' => 'on_delivery',
-        ]);
+        foreach ($deliveryTrip->shipments as $shipment) {
+            $shipment->update([
+                'status' => 'on_delivery',
+            ]);
+        }
 
         auth()->user()->update([
             'availability_status' => 'on_delivery',

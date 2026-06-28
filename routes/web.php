@@ -50,6 +50,11 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
+    Route::get('shipments/{shipment}/print-surat-jalan', [App\Http\Controllers\ShipmentPrintController::class, 'print'])
+        ->name('shipments.print-surat-jalan');
+    Route::get('delivery-trips/{deliveryTrip}/print-all-surat-jalan', [App\Http\Controllers\ShipmentPrintController::class, 'printAll'])
+        ->name('delivery-trips.print-all-surat-jalan');
+
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
