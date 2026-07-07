@@ -20,8 +20,17 @@
         </div>
     @endif
 
+    @if (session('error'))
+        <div class="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div class="space-y-5">
         @forelse ($trips as $trip)
+            @php
+                $allStopsCompleted = $trip->tripShipments->every(fn($ts) => $ts->shipment?->status === 'completed');
+            @endphp
             <div class="glass-panel rounded-[24px] border border-white/50 p-6 shadow-lg">
                 <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div>
@@ -49,10 +58,36 @@
                                     Mulai Trip
                                 </button>
                             </form>
+
                         @elseif ($trip->status === 'on_trip')
                             <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                                On Trip
+                                🚚 On Trip
                             </span>
+
+                            {{-- Tombol Return Home muncul hanya jika semua stop sudah selesai --}}
+                            @if ($allStopsCompleted)
+                                <form action="{{ route('driver.delivery-trips.return-home', $trip) }}" method="POST">
+                                    @csrf
+                                    <button type="submit"
+                                        class="w-full rounded-2xl bg-indigo-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-600">
+                                        🏠 Return Home
+                                    </button>
+                                </form>
+                            @endif
+
+                        @elseif ($trip->status === 'returning')
+                            <span class="rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700">
+                                🏠 Return Home
+                            </span>
+
+                            <form action="{{ route('driver.delivery-trips.finish', $trip) }}" method="POST">
+                                @csrf
+                                <button type="submit"
+                                    class="w-full rounded-2xl bg-emerald-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-600">
+                                    ✅ Sampai di Gudang
+                                </button>
+                            </form>
+
                         @else
                             <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
                                 {{ ucfirst($trip->status) }}
@@ -112,9 +147,15 @@
                                 </div>
 
                                 <div class="space-y-3">
-                                    <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-                                        {{ ucfirst($shipment->status) }}
-                                    </span>
+                                    @if ($shipment->status === 'completed')
+                                        <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                                            ✅ Selesai
+                                        </span>
+                                    @else
+                                        <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+                                            {{ ucfirst($shipment->status) }}
+                                        </span>
+                                    @endif
 
                                     @if ($trip->status === 'on_trip' && $shipment->status !== 'completed')
                                         <form action="{{ route('driver.delivery-trips.complete-stop', [$trip, $tripShipment->id]) }}" method="POST">
@@ -131,17 +172,7 @@
                     @endforeach
                 </div>
 
-                @if ($trip->status === 'on_trip')
-                    <div class="mt-6">
-                        <form action="{{ route('driver.delivery-trips.finish', $trip) }}" method="POST">
-                            @csrf
-                            <button type="submit"
-                                class="rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
-                                Selesaikan Trip
-                            </button>
-                        </form>
-                    </div>
-                @endif
+                {{-- Tombol "Selesaikan Trip" lama dihapus — digantikan oleh Return Home dan Sampai di Gudang di atas --}}
             </div>
         @empty
             <div class="glass-panel rounded-[24px] border border-white/50 p-8 text-center text-sm text-slate-500 shadow-lg">

@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\Inventory\WasteController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VehicleCapacityController;
 use App\Http\Controllers\Admin\VehicleController;
+use App\Http\Controllers\Admin\VehicleMaintenanceController;
 use App\Http\Controllers\Admin\DeliveryTripController as AdminDeliveryTripController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Driver\DashboardController as DriverDashboardController;
@@ -86,6 +87,10 @@ Route::middleware('auth')->group(function () {
         Route::get('vehicles/{vehicle}/edit', [VehicleController::class, 'edit'])->name('vehicles.edit');
         Route::put('vehicles/{vehicle}', [VehicleController::class, 'update'])->name('vehicles.update');
 
+        Route::get('vehicle-maintenances', [VehicleMaintenanceController::class, 'index'])->name('vehicle-maintenances.index');
+        Route::post('vehicle-maintenances', [VehicleMaintenanceController::class, 'store'])->name('vehicle-maintenances.store');
+        Route::post('vehicle-maintenances/{vehicle}/release', [VehicleMaintenanceController::class, 'release'])->name('vehicle-maintenances.release');
+
         Route::get('vehicle-capacities', [VehicleCapacityController::class, 'index'])->name('vehicle-capacities.index');
         Route::get('vehicle-capacities/create', [VehicleCapacityController::class, 'create'])->name('vehicle-capacities.create');
         Route::post('vehicle-capacities', [VehicleCapacityController::class, 'store'])->name('vehicle-capacities.store');
@@ -138,6 +143,7 @@ Route::middleware('auth')->group(function () {
         Route::get('delivery-trips', [DriverDeliveryTripController::class, 'index'])->name('delivery-trips.index');
         Route::post('delivery-trips/{deliveryTrip}/start', [DriverDeliveryTripController::class, 'start'])->name('delivery-trips.start');
         Route::post('delivery-trips/{deliveryTrip}/trip-shipments/{tripShipmentId}/complete-stop', [DriverDeliveryTripController::class, 'completeStop'])->name('delivery-trips.complete-stop');
+        Route::post('delivery-trips/{deliveryTrip}/return-home', [DriverDeliveryTripController::class, 'returnHome'])->name('delivery-trips.return-home');
         Route::post('delivery-trips/{deliveryTrip}/finish', [DriverDeliveryTripController::class, 'finish'])->name('delivery-trips.finish');
     });
 });

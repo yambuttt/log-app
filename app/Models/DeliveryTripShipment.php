@@ -19,6 +19,11 @@ class DeliveryTripShipment extends Model
         return $this->belongsTo(DeliveryTrip::class, 'delivery_trip_id');
     }
 
+    public function deliveryTrip(): BelongsTo
+    {
+        return $this->belongsTo(DeliveryTrip::class, 'delivery_trip_id');
+    }
+
     public function shipment(): BelongsTo
     {
         return $this->belongsTo(Shipment::class);

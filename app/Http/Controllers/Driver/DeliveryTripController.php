@@ -17,7 +17,7 @@ class DeliveryTripController extends Controller
                 'tripShipments.shipment.items.product',
             ])
             ->where('driver_user_id', auth()->id())
-            ->whereIn('status', ['planned', 'on_trip'])
+            ->whereIn('status', ['planned', 'on_trip', 'returning'])
             ->latest()
             ->paginate(10);
 
@@ -51,14 +51,45 @@ class DeliveryTripController extends Controller
         abort_unless($deliveryTrip->driver_user_id === auth()->id(), 403);
 
         $tripShipment = $deliveryTrip->tripShipments()
-            ->with('shipment')
+            ->with('shipment.order')
             ->findOrFail($tripShipmentId);
 
         $tripShipment->shipment->update([
             'status' => 'completed',
         ]);
 
+        // Update order terkait ke completed jika semua shipment-nya selesai
+        $order = $tripShipment->shipment->order;
+        if ($order) {
+            $order->update(['status' => 'completed']);
+        }
+
         return back()->with('success', 'Stop berhasil diselesaikan.');
+    }
+
+    public function returnHome(DeliveryTrip $deliveryTrip): RedirectResponse
+    {
+        abort_unless($deliveryTrip->driver_user_id === auth()->id(), 403);
+        abort_unless($deliveryTrip->status === 'on_trip', 403);
+
+        // Pastikan semua stop sudah selesai sebelum return home
+        $hasIncompleteStop = $deliveryTrip->shipments()
+            ->where('status', '!=', 'completed')
+            ->exists();
+
+        if ($hasIncompleteStop) {
+            return back()->with('error', 'Semua stop harus diselesaikan terlebih dahulu sebelum return home.');
+        }
+
+        $deliveryTrip->update([
+            'status' => 'returning',
+        ]);
+
+        auth()->user()->update([
+            'availability_status' => 'returning',
+        ]);
+
+        return back()->with('success', 'Status diubah ke Return Home. Selamat perjalanan pulang!');
     }
 
     public function finish(DeliveryTrip $deliveryTrip): RedirectResponse
@@ -69,15 +100,22 @@ class DeliveryTripController extends Controller
             'status' => 'completed',
         ]);
 
-        // Ensure all shipments in this trip are marked completed if they weren't already
-        $deliveryTrip->shipments()->where('status', '!=', 'completed')->update([
-            'status' => 'completed',
-        ]);
+        // Pastikan semua shipment di trip ini selesai
+        $shipments = $deliveryTrip->shipments()->get();
+        foreach ($shipments as $shipment) {
+            if ($shipment->status !== 'completed') {
+                $shipment->update(['status' => 'completed']);
+            }
+            // Update order terkait ke completed
+            if ($shipment->order) {
+                $shipment->order->update(['status' => 'completed']);
+            }
+        }
 
         auth()->user()->update([
             'availability_status' => 'available',
         ]);
 
-        return back()->with('success', 'Trip selesai.');
+        return back()->with('success', 'Trip selesai. Selamat datang kembali!');
     }
 }

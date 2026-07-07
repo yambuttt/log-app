@@ -10,7 +10,7 @@
             Buat Pengiriman
         </h2>
         <p class="mt-1 text-sm text-slate-500">
-            Sistem akan otomatis mencarikan driver dan kendaraan yang sesuai.
+            Buat data pengiriman untuk pesanan. Driver & kendaraan ditentukan saat membuat Delivery Trip.
         </p>
     </div>
 
@@ -61,10 +61,9 @@
                 </div>
             </div>
 
-            <div class="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-                Sistem akan mencoba:
-                driver aktif → status available → punya kendaraan hari itu → kapasitas kendaraan sesuai pesanan.
-                Jika tidak ada yang cocok, shipment dibuat dengan status <strong>waiting_driver</strong>.
+            <div class="rounded-2xl border border-sky-100 bg-sky-50 px-4 py-3 text-sm text-sky-800">
+                <strong>ℹ️ Alur Pengiriman:</strong><br>
+                Setelah pengiriman dibuat (status <strong>Pending</strong>), masukkan ke <strong>Delivery Trip</strong> bersama pengiriman lain yang bisa digabung ke 1 kendaraan. Driver & kendaraan baru ditentukan di tahap tersebut.
             </div>
 
             <div class="flex flex-col gap-3 pt-4 sm:flex-row">

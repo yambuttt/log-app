@@ -12,7 +12,7 @@ class VehicleController extends Controller
 {
     public function index(): View
     {
-        $vehicles = Vehicle::latest()->paginate(10);
+        $vehicles = Vehicle::with(['activeTrip.driver', 'todayAssignment.driver'])->latest()->paginate(10);
 
         return view('admin.vehicles.index', compact('vehicles'));
     }

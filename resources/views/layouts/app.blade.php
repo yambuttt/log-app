@@ -140,6 +140,12 @@
                             <span>Master Kendaraan</span>
                         </a>
 
+                        <a href="{{ route('admin.vehicle-maintenances.index') }}"
+                            class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.vehicle-maintenances.*') ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                            <span class="text-lg">🛠️</span>
+                            <span>Maintenance Kendaraan</span>
+                        </a>
+
                         <a href="{{ route('admin.vehicle-capacities.index') }}"
                             class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.vehicle-capacities.*') ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
                             <span class="text-lg">📦</span>
@@ -301,6 +307,12 @@
                         class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.vehicles.*') ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
                         <span class="text-lg">🚚</span>
                         <span>Master Kendaraan</span>
+                    </a>
+
+                    <a href="{{ route('admin.vehicle-maintenances.index') }}"
+                        class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.vehicle-maintenances.*') ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                        <span class="text-lg">🛠️</span>
+                        <span>Maintenance Kendaraan</span>
                     </a>
 
                     <a href="{{ route('admin.vehicle-capacities.index') }}"

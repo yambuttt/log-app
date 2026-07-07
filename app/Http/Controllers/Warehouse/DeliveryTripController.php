@@ -36,7 +36,7 @@ class DeliveryTripController extends Controller
         $shipments = Shipment::with(['order.items.product', 'items.product'])
             ->where('warehouse_id', $warehouseId)
             ->whereDate('shipment_date', $tripDate)
-            ->whereIn('status', ['assigned', 'waiting_driver'])
+            ->where('status', 'pending')
             ->whereDoesntHave('tripShipments')
             ->get();
 
@@ -87,6 +87,7 @@ class DeliveryTripController extends Controller
         $shipments = Shipment::with(['order', 'items.product'])
             ->where('warehouse_id', $warehouseId)
             ->whereIn('id', $validated['shipment_ids'])
+            ->where('status', 'pending')
             ->whereDoesntHave('tripShipments')
             ->get();
 

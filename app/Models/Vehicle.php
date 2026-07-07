@@ -13,6 +13,8 @@ class Vehicle extends Model
         'vehicle_type',
         'fuel_efficiency',
         'is_active',
+        'status',
+        'maintenance_notes',
     ];
 
     protected function casts(): array
@@ -31,5 +33,25 @@ class Vehicle extends Model
     public function assignments(): HasMany
     {
         return $this->hasMany(DriverVehicleAssignment::class);
+    }
+
+    public function deliveryTrips(): HasMany
+    {
+        return $this->hasMany(DeliveryTrip::class);
+    }
+
+    public function activeTrip()
+    {
+        return $this->hasOne(DeliveryTrip::class)
+            ->whereIn('status', ['on_trip', 'returning'])
+            ->with('driver')
+            ->latest();
+    }
+
+    public function todayAssignment()
+    {
+        return $this->hasOne(DriverVehicleAssignment::class)
+            ->where('assignment_date', now()->toDateString())
+            ->with('driver');
     }
 }

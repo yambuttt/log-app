@@ -11,7 +11,7 @@
                     Pengiriman
                 </h2>
                 <p class="mt-1 text-sm text-slate-500">
-                    Kelola pengiriman untuk gudang Anda.
+                    Daftar pengiriman. Driver & kendaraan ditentukan saat membuat Delivery Trip.
                 </p>
             </div>
 
@@ -32,26 +32,20 @@
                 <table class="min-w-full border-separate border-spacing-y-3">
                     <thead>
                         <tr>
-                            <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">No
-                                Pengiriman</th>
-                            <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-                                Tanggal</th>
-                            <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-                                Pesanan</th>
-                            <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-                                Driver</th>
-                            <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-                                Kendaraan</th>
-                            <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-                                Estimasi Jarak</th>
-                            <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-                                Maps</th>
-                            <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-                                Status</th>
+                            <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">No Pengiriman</th>
+                            <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Tanggal</th>
+                            <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Pesanan</th>
+                            <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Estimasi Jarak</th>
+                            <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Maps</th>
+                            <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Delivery Trip</th>
+                            <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($shipments as $shipment)
+                            @php
+                                $deliveryTrip = $shipment->tripShipments->first()?->deliveryTrip ?? null;
+                            @endphp
                             <tr class="rounded-2xl bg-white shadow-sm align-top">
                                 <td class="rounded-l-2xl px-4 py-4 font-semibold text-slate-900">
                                     {{ $shipment->shipment_number }}
@@ -64,17 +58,6 @@
                                     <div>{{ $shipment->order->customer_name ?? '-' }}</div>
                                 </td>
                                 <td class="px-4 py-4 text-sm text-slate-700">
-                                    {{ $shipment->driver->name ?? '-' }}
-                                </td>
-                                <td class="px-4 py-4 text-sm text-slate-700">
-                                    @if ($shipment->vehicle)
-                                        <div class="font-semibold text-slate-900">{{ $shipment->vehicle->name }}</div>
-                                        <div>{{ $shipment->vehicle->plate_number }}</div>
-                                    @else
-                                        -
-                                    @endif
-                                </td>
-                                <td class="px-4 py-4 text-sm text-slate-700">
                                     @if ($shipment->estimated_distance_km || $shipment->estimated_duration_minutes)
                                         <div class="font-semibold text-slate-900">
                                             {{ $shipment->estimated_distance_km ? $shipment->estimated_distance_km . ' km' : '-' }}
@@ -83,7 +66,7 @@
                                             {{ $shipment->estimated_duration_minutes ? $shipment->estimated_duration_minutes . ' menit' : '-' }}
                                         </div>
                                     @else
-                                        -
+                                        <span class="text-slate-400">-</span>
                                     @endif
                                 </td>
                                 <td class="px-4 py-4 text-sm text-slate-700">
@@ -97,17 +80,35 @@
                                             Buka Maps
                                         </a>
                                     @else
-                                        -
+                                        <span class="text-slate-400">-</span>
+                                    @endif
+                                </td>
+                                <td class="px-4 py-4 text-sm text-slate-700">
+                                    @if ($deliveryTrip)
+                                        <div class="font-semibold text-slate-900">{{ $deliveryTrip->trip_number }}</div>
+                                        <div class="text-xs text-slate-500">{{ \Carbon\Carbon::parse($deliveryTrip->trip_date)->format('d M Y') }}</div>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-500">
+                                            Belum ada trip
+                                        </span>
                                     @endif
                                 </td>
                                 <td class="rounded-r-2xl px-4 py-4 text-sm">
-                                    @if ($shipment->status === 'assigned')
-                                        <span class="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-700">
-                                            Assigned
+                                    @if ($shipment->status === 'pending')
+                                        <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                                            ⏳ Pending
                                         </span>
-                                    @elseif ($shipment->status === 'waiting_driver')
+                                    @elseif ($shipment->status === 'assigned')
+                                        <span class="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-700">
+                                            ✅ Assigned
+                                        </span>
+                                    @elseif ($shipment->status === 'on_delivery')
                                         <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                                            Waiting Driver
+                                            🚚 On Delivery
+                                        </span>
+                                    @elseif ($shipment->status === 'completed')
+                                        <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                                            ✅ Selesai
                                         </span>
                                     @else
                                         <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
@@ -118,7 +119,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="px-4 py-10 text-center text-sm text-slate-500">
+                                <td colspan="7" class="px-4 py-10 text-center text-sm text-slate-500">
                                     Belum ada pengiriman.
                                 </td>
                             </tr>

@@ -379,7 +379,7 @@
                 <div class="signature-col">
                     <div>Penerima,</div>
                     <div class="signature-space">
-                        ( &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; )
+                        ( <span style="font-weight: normal; border-bottom: 1px solid transparent; min-width: 120px; display: inline-block;">{{ $shipment->order->customer_name ?? '               ' }}</span> )
                     </div>
                 </div>
             </div>

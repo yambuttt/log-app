@@ -42,9 +42,17 @@
                     </div>
 
                     <div class="flex flex-col items-end gap-2">
-                        <div class="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-700">
-                            {{ ucfirst($trip->status) }}
-                        </div>
+                        @if ($trip->status === 'planned')
+                            <span class="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-700">Planned</span>
+                        @elseif ($trip->status === 'on_trip')
+                            <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">🚚 On Trip</span>
+                        @elseif ($trip->status === 'returning')
+                            <span class="rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700">🏠 Return Home</span>
+                        @elseif ($trip->status === 'completed')
+                            <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">✅ Completed</span>
+                        @else
+                            <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{{ ucfirst($trip->status) }}</span>
+                        @endif
                         <a href="{{ route('delivery-trips.print-all-surat-jalan', $trip->id) }}" target="_blank"
                            class="mt-2 inline-flex items-center gap-1.5 rounded-xl bg-emerald-900 px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-emerald-800 transition">
                             🖨️ Print Semua Surat Jalan

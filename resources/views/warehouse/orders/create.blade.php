@@ -102,6 +102,23 @@
                         <p class="mb-3 text-sm text-red-600">{{ $message }}</p>
                     @enderror
 
+                    @if ($errors->has('stock'))
+                        <div class="mb-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3">
+                            <p class="mb-1 text-sm font-semibold text-red-700">⚠️ Stok tidak mencukupi:</p>
+                            <ul class="list-inside list-disc space-y-1">
+                                @foreach ($errors->get('stock') as $stockError)
+                                    @if (is_array($stockError))
+                                        @foreach ($stockError as $msg)
+                                            <li class="text-sm text-red-600">{{ $msg }}</li>
+                                        @endforeach
+                                    @else
+                                        <li class="text-sm text-red-600">{{ $stockError }}</li>
+                                    @endif
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <div id="items-wrapper" class="space-y-4">
                         <div
                             class="grid gap-4 rounded-2xl border border-slate-200 p-4 md:grid-cols-[1fr_220px_auto] item-row">

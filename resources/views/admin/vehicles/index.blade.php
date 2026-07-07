@@ -66,14 +66,44 @@
                                 {{ $vehicle->fuel_efficiency ?? '10.00' }} km/l
                             </td>
                             <td class="px-4 py-4 text-sm">
-                                @if ($vehicle->is_active)
-                                    <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
-                                        Aktif
+                                @php $activeTrip = $vehicle->activeTrip; @endphp
+                                @if ($vehicle->status === 'maintenance')
+                                    <span class="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-700">
+                                        🛠️ Maintenance
                                     </span>
-                                @else
+                                @elseif (!$vehicle->is_active)
                                     <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
                                         Nonaktif
                                     </span>
+                                @elseif ($activeTrip && $activeTrip->status === 'on_trip')
+                                    <div class="space-y-1">
+                                        <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
+                                            🚚 On Trip
+                                        </span>
+                                        <p class="text-xs text-slate-500 pl-1">
+                                            {{ $activeTrip->driver->name ?? '-' }}
+                                        </p>
+                                    </div>
+                                @elseif ($activeTrip && $activeTrip->status === 'returning')
+                                    <div class="space-y-1">
+                                        <span class="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700">
+                                            🏠 Return Home
+                                        </span>
+                                        <p class="text-xs text-slate-500 pl-1">
+                                            {{ $activeTrip->driver->name ?? '-' }}
+                                        </p>
+                                    </div>
+                                @else
+                                    <div class="space-y-1">
+                                        <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                                            Aktif
+                                        </span>
+                                        @if ($vehicle->todayAssignment && $vehicle->todayAssignment->driver)
+                                            <p class="text-xs text-slate-500 pl-1">
+                                                Driver: {{ $vehicle->todayAssignment->driver->name }}
+                                            </p>
+                                        @endif
+                                    </div>
                                 @endif
                             </td>
                             <td class="rounded-r-2xl px-4 py-4 text-sm">

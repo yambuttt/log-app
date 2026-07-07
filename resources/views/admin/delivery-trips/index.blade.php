@@ -37,9 +37,13 @@
                         @if ($trip->status === 'planned')
                             <span class="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-700">Planned</span>
                         @elseif ($trip->status === 'on_trip')
-                            <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">On Trip</span>
+                            <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">🚚 On Trip</span>
+                        @elseif ($trip->status === 'returning')
+                            <span class="rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700">🏠 Return Home</span>
+                        @elseif ($trip->status === 'completed')
+                            <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">✅ Completed</span>
                         @else
-                            <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">{{ ucfirst($trip->status) }}</span>
+                            <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{{ ucfirst($trip->status) }}</span>
                         @endif
 
                         <div class="mt-2 text-right">
