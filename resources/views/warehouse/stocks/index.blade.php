@@ -23,6 +23,9 @@
                         <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Barang</th>
                         <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">SKU</th>
                         <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Satuan</th>
+                        <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Harga Modal</th>
+                        <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Harga Jual</th>
+                        <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Profit (Margin)</th>
                         <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Qty</th>
                         <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Update Terakhir</th>
                     </tr>
@@ -42,6 +45,24 @@
                             <td class="px-4 py-4 text-sm text-slate-600">
                                 {{ $stock->product->unit->name ?? '-' }}
                             </td>
+                            <td class="px-4 py-4 text-sm text-slate-700 font-medium">
+                                Rp {{ number_format($stock->product->harga_modal ?? 0, 0, ',', '.') }}
+                            </td>
+                            <td class="px-4 py-4 text-sm text-slate-700 font-medium">
+                                Rp {{ number_format($stock->product->harga_jual ?? 0, 0, ',', '.') }}
+                            </td>
+                            <td class="px-4 py-4 text-sm text-slate-600">
+                                @if(($stock->product->harga_jual ?? 0) > 0)
+                                    <div class="font-semibold text-slate-950">
+                                        Rp {{ number_format($stock->product->keuntungan ?? 0, 0, ',', '.') }}
+                                    </div>
+                                    <div class="text-xs font-bold {{ ($stock->product->margin ?? 0) >= 20 ? 'text-emerald-600' : (($stock->product->margin ?? 0) > 0 ? 'text-blue-600' : 'text-slate-500') }}">
+                                        {{ number_format($stock->product->margin ?? 0, 2, ',', '.') }}%
+                                    </div>
+                                @else
+                                    <span class="text-slate-400">-</span>
+                                @endif
+                            </td>
                             <td class="px-4 py-4 text-sm">
                                 <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
                                     {{ rtrim(rtrim(number_format($stock->qty, 2, '.', ''), '0'), '.') }}
@@ -53,7 +74,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-10 text-center text-sm text-slate-500">
+                            <td colspan="9" class="px-4 py-10 text-center text-sm text-slate-500">
                                 Belum ada data stok untuk gudang ini.
                             </td>
                         </tr>

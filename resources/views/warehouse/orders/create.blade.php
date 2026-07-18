@@ -41,8 +41,12 @@
                     <div>
                         <label class="mb-2 block text-sm font-semibold text-slate-700">No. HP Customer</label>
                         <input type="text" name="customer_phone" value="{{ old('customer_phone') }}"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                             class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-900 focus:ring-4 focus:ring-emerald-100"
                             placeholder="08xxxx">
+                        @error('customer_phone')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="md:col-span-2">
@@ -59,6 +63,7 @@
                             <label class="mb-2 block text-sm font-semibold text-slate-700">Latitude Pengiriman</label>
                             <input id="delivery_latitude" type="text" name="delivery_latitude"
                                 value="{{ old('delivery_latitude', '-7.2575') }}"
+                                oninput="this.value = this.value.replace(/[^0-9.-]/g, '')"
                                 class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none">
                             @error('delivery_latitude')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -69,6 +74,7 @@
                             <label class="mb-2 block text-sm font-semibold text-slate-700">Longitude Pengiriman</label>
                             <input id="delivery_longitude" type="text" name="delivery_longitude"
                                 value="{{ old('delivery_longitude', '112.7521') }}"
+                                oninput="this.value = this.value.replace(/[^0-9.-]/g, '')"
                                 class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none">
                             @error('delivery_longitude')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -121,11 +127,11 @@
 
                     <div id="items-wrapper" class="space-y-4">
                         <div
-                            class="grid gap-4 rounded-2xl border border-slate-200 p-4 md:grid-cols-[1fr_220px_auto] item-row">
+                            class="grid gap-4 rounded-2xl border border-slate-200 p-4 md:grid-cols-[2fr_1fr_1.5fr_auto] item-row">
                             <div>
                                 <label class="mb-2 block text-sm font-semibold text-slate-700">Produk</label>
                                 <select name="items[0][product_id]"
-                                    class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-900 focus:ring-4 focus:ring-emerald-100">
+                                    class="product-select w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-900 focus:ring-4 focus:ring-emerald-100">
                                     <option value="">Pilih produk</option>
                                     @foreach ($products as $product)
                                         <option value="{{ $product->id }}" @selected(old('items.0.product_id') == $product->id)>
@@ -140,21 +146,37 @@
 
                             <div>
                                 <label class="mb-2 block text-sm font-semibold text-slate-700">Qty</label>
-                                <input type="number" step="0.01" name="items[0][qty]" value="{{ old('items.0.qty') }}"
-                                    class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-900 focus:ring-4 focus:ring-emerald-100"
-                                    placeholder="Contoh: 10">
+                                <div class="relative rounded-2xl">
+                                    <input type="number" step="0.01" name="items[0][qty]" value="{{ old('items.0.qty') }}"
+                                        onkeydown="if(['e', 'E', '+', '-'].includes(event.key)) event.preventDefault();"
+                                        class="qty-input w-full rounded-2xl border border-slate-200 bg-white pr-16 pl-4 py-3 text-sm outline-none focus:border-emerald-900 focus:ring-4 focus:ring-emerald-100"
+                                        placeholder="Contoh: 10">
+                                    <span class="unit-badge absolute right-3 top-3.5 text-xs font-semibold text-slate-500"></span>
+                                </div>
                                 @error('items.0.qty')
                                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
-                            <div class="flex items-end">
+                            <div class="flex flex-col justify-center px-2">
+                                <span class="text-xs text-slate-500">Harga Satuan</span>
+                                <span class="price-display text-sm font-semibold text-slate-700">-</span>
+                                <span class="text-xs text-slate-500 mt-1">Subtotal</span>
+                                <span class="subtotal-display text-base font-bold text-slate-900">-</span>
+                            </div>
+
+                            <div class="flex items-end justify-end">
                                 <button type="button"
                                     class="remove-item rounded-xl border border-red-200 px-4 py-3 text-sm font-semibold text-red-600 hover:bg-red-50">
                                     Hapus
                                 </button>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="flex justify-between items-center bg-slate-50 rounded-2xl p-4 border border-slate-200/60 mt-4">
+                        <span class="text-sm font-bold text-slate-700">Total Nominal Pesanan</span>
+                        <span id="grand-total-display" class="text-lg font-extrabold text-slate-900">Rp 0</span>
                     </div>
                 </div>
 
@@ -174,19 +196,71 @@
     </div>
 
     <script>
+        const productsData = {
+            @foreach ($products as $product)
+                "{{ $product->id }}": {
+                    "name": "{!! addslashes($product->name) !!}",
+                    "sku": "{{ $product->sku }}",
+                    "harga_jual": {{ (float) $product->harga_jual }},
+                    "unit_symbol": "{{ $product->unit->symbol ?? '' }}"
+                },
+            @endforeach
+        };
+
         const addItemButton = document.getElementById('add-item');
         const itemsWrapper = document.getElementById('items-wrapper');
+
+        function formatRupiah(value) {
+            return 'Rp ' + new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(value);
+        }
+
+        function updateRowPricing(row) {
+            const productSelect = row.querySelector('.product-select');
+            const qtyInput = row.querySelector('.qty-input');
+            const unitBadge = row.querySelector('.unit-badge');
+            const priceDisplay = row.querySelector('.price-display');
+            const subtotalDisplay = row.querySelector('.subtotal-display');
+
+            const productId = productSelect.value;
+            const qty = parseFloat(qtyInput.value) || 0;
+
+            if (productId && productsData[productId]) {
+                const product = productsData[productId];
+                unitBadge.textContent = product.unit_symbol;
+                priceDisplay.textContent = `${formatRupiah(product.harga_jual)} / ${product.unit_symbol}`;
+                subtotalDisplay.textContent = formatRupiah(product.harga_jual * qty);
+            } else {
+                unitBadge.textContent = '';
+                priceDisplay.textContent = '-';
+                subtotalDisplay.textContent = '-';
+            }
+        }
+
+        function updateGrandTotal() {
+            let total = 0;
+            itemsWrapper.querySelectorAll('.item-row').forEach(row => {
+                const productSelect = row.querySelector('.product-select');
+                const qtyInput = row.querySelector('.qty-input');
+                const productId = productSelect.value;
+                const qty = parseFloat(qtyInput.value) || 0;
+
+                if (productId && productsData[productId]) {
+                    total += productsData[productId].harga_jual * qty;
+                }
+            });
+            document.getElementById('grand-total-display').textContent = formatRupiah(total);
+        }
 
         addItemButton.addEventListener('click', function () {
             const index = itemsWrapper.querySelectorAll('.item-row').length;
 
             const template = `
-                <div class="grid gap-4 rounded-2xl border border-slate-200 p-4 md:grid-cols-[1fr_220px_auto] item-row">
+                <div class="grid gap-4 rounded-2xl border border-slate-200 p-4 md:grid-cols-[2fr_1fr_1.5fr_auto] item-row">
                     <div>
                         <label class="mb-2 block text-sm font-semibold text-slate-700">Produk</label>
                         <select
                             name="items[${index}][product_id]"
-                            class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-900 focus:ring-4 focus:ring-emerald-100"
+                            class="product-select w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-900 focus:ring-4 focus:ring-emerald-100"
                         >
                             <option value="">Pilih produk</option>
                             @foreach ($products as $product)
@@ -197,16 +271,27 @@
 
                     <div>
                         <label class="mb-2 block text-sm font-semibold text-slate-700">Qty</label>
-                        <input
-                            type="number"
-                            step="0.01"
-                            name="items[${index}][qty]"
-                            class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-900 focus:ring-4 focus:ring-emerald-100"
-                            placeholder="Contoh: 10"
-                        >
+                        <div class="relative rounded-2xl">
+                            <input
+                                type="number"
+                                step="0.01"
+                                name="items[${index}][qty]"
+                                onkeydown="if(['e', 'E', '+', '-'].includes(event.key)) event.preventDefault();"
+                                class="qty-input w-full rounded-2xl border border-slate-200 bg-white pr-16 pl-4 py-3 text-sm outline-none focus:border-emerald-900 focus:ring-4 focus:ring-emerald-100"
+                                placeholder="Contoh: 10"
+                            >
+                            <span class="unit-badge absolute right-3 top-3.5 text-xs font-semibold text-slate-500"></span>
+                        </div>
                     </div>
 
-                    <div class="flex items-end">
+                    <div class="flex flex-col justify-center px-2">
+                        <span class="text-xs text-slate-500">Harga Satuan</span>
+                        <span class="price-display text-sm font-semibold text-slate-700">-</span>
+                        <span class="text-xs text-slate-500 mt-1">Subtotal</span>
+                        <span class="subtotal-display text-base font-bold text-slate-900">-</span>
+                    </div>
+
+                    <div class="flex items-end justify-end">
                         <button
                             type="button"
                             class="remove-item rounded-xl border border-red-200 px-4 py-3 text-sm font-semibold text-red-600 hover:bg-red-50"
@@ -226,9 +311,32 @@
 
                 if (rows.length > 1) {
                     e.target.closest('.item-row').remove();
+                    updateGrandTotal();
                 }
             }
         });
+
+        itemsWrapper.addEventListener('change', function (e) {
+            if (e.target.classList.contains('product-select')) {
+                const row = e.target.closest('.item-row');
+                updateRowPricing(row);
+                updateGrandTotal();
+            }
+        });
+
+        itemsWrapper.addEventListener('input', function (e) {
+            if (e.target.classList.contains('qty-input')) {
+                const row = e.target.closest('.item-row');
+                updateRowPricing(row);
+                updateGrandTotal();
+            }
+        });
+
+        // Initialize calculations on page load
+        itemsWrapper.querySelectorAll('.item-row').forEach(row => {
+            updateRowPricing(row);
+        });
+        updateGrandTotal();
     </script>
     @push('styles')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />

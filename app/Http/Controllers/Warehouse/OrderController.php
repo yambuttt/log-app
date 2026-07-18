@@ -43,7 +43,7 @@ class OrderController extends Controller
         $validated = $request->validate([
             'order_date'         => ['required', 'date'],
             'customer_name'      => ['required', 'string', 'max:255'],
-            'customer_phone'     => ['nullable', 'string', 'max:255'],
+            'customer_phone'     => ['nullable', 'regex:/^[0-9]+$/', 'max:50'],
             'delivery_address'   => ['required', 'string'],
             'notes'              => ['nullable', 'string'],
             'items'              => ['required', 'array', 'min:1'],
@@ -59,6 +59,7 @@ class OrderController extends Controller
             'items.min'                    => 'Minimal ada 1 item pesanan.',
             'items.*.product_id.required'  => 'Produk wajib dipilih.',
             'items.*.qty.required'         => 'Qty wajib diisi.',
+            'customer_phone.regex'         => 'Nomor HP customer hanya boleh berisi angka.',
         ]);
 
         // ── Validasi ketersediaan stok per item ──────────────────────────────

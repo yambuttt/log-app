@@ -322,11 +322,13 @@
             <table class="items-table">
                 <thead>
                     <tr>
-                        <th style="width: 6%;">NO.</th>
-                        <th style="width: 40%;">Jenis Barang</th>
-                        <th style="width: 22%;">Berat Barang<br><span style="font-size: 9px; font-weight: normal; text-transform: none;">( Drum / Ltr / Klg / Kg )</span></th>
-                        <th style="width: 17%;">Jumlah Barang</th>
-                        <th style="width: 15%;">Keterangan</th>
+                        <th style="width: 5%;">NO.</th>
+                        <th style="width: 32%;">Jenis Barang</th>
+                        <th style="width: 12%;">Berat Barang</th>
+                        <th style="width: 13%;">Jumlah Barang</th>
+                        <th style="width: 13%;">Harga Satuan</th>
+                        <th style="width: 15%;">Total Harga</th>
+                        <th style="width: 10%;">Keterangan</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -335,7 +337,9 @@
                             <td class="text-center">{{ $idx + 1 }}</td>
                             <td>{{ $item->product->name ?? '-' }}</td>
                             <td class="text-center">{{ $item->product->weight_kg ? number_format($item->product->weight_kg, 1, ',', '.') . ' KG' : '-' }}</td>
-                            <td class="text-center">KIRIM: {{ (float)$item->qty }} {{ $item->product->unit->name ?? 'Tabung' }}</td>
+                            <td class="text-center">KIRIM: {{ (float)$item->qty }} {{ $item->product->unit->symbol ?? 'Tbg' }}</td>
+                            <td class="text-right">Rp {{ number_format($item->product->harga_jual ?? 0, 0, ',', '.') }}</td>
+                            <td class="text-right">Rp {{ number_format(($item->product->harga_jual ?? 0) * $item->qty, 0, ',', '.') }}</td>
                             <td>
                                 @if($loop->first)
                                     {{ $shipment->notes }}
@@ -348,6 +352,8 @@
                     @for ($i = count($shipment->items); $i < 4; $i++)
                         <tr>
                             <td class="text-center" style="color: transparent;">&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>

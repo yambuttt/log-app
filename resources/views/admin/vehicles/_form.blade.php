@@ -53,6 +53,7 @@
             id="fuel_efficiency"
             name="fuel_efficiency"
             value="{{ old('fuel_efficiency', $vehicle->fuel_efficiency ?? '') }}"
+            onkeydown="if(['e', 'E', '+', '-'].includes(event.key)) event.preventDefault();"
             class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-slate-900 focus:ring-4 focus:ring-slate-200"
             placeholder="Contoh: 12.5"
         >

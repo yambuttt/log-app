@@ -34,6 +34,8 @@ class ProductController extends Controller
             'sku' => ['required', 'string', 'max:255', 'unique:products,sku'],
             'unit_id' => ['required', 'exists:units,id'],
             'weight_kg' => ['nullable', 'numeric', 'min:0'],
+            'harga_modal' => ['required', 'numeric', 'min:0'],
+            'harga_jual' => ['required', 'numeric', 'min:0'],
             'minimum_stock' => ['nullable', 'numeric', 'min:0'],
             'is_active' => ['nullable', 'boolean'],
         ], [
@@ -43,6 +45,12 @@ class ProductController extends Controller
             'unit_id.required' => 'Satuan wajib dipilih.',
             'unit_id.exists' => 'Satuan tidak valid.',
             'weight_kg.numeric' => 'Berat harus berupa angka.',
+            'harga_modal.required' => 'Harga modal wajib diisi.',
+            'harga_modal.numeric' => 'Harga modal harus berupa angka.',
+            'harga_modal.min' => 'Harga modal tidak boleh kurang dari 0.',
+            'harga_jual.required' => 'Harga jual wajib diisi.',
+            'harga_jual.numeric' => 'Harga jual harus berupa angka.',
+            'harga_jual.min' => 'Harga jual tidak boleh kurang dari 0.',
             'minimum_stock.numeric' => 'Minimum stok harus berupa angka.',
         ]);
 
@@ -70,6 +78,8 @@ class ProductController extends Controller
             'sku' => ['required', 'string', 'max:255', 'unique:products,sku,' . $product->id],
             'unit_id' => ['required', 'exists:units,id'],
             'weight_kg' => ['nullable', 'numeric', 'min:0'],
+            'harga_modal' => ['required', 'numeric', 'min:0'],
+            'harga_jual' => ['required', 'numeric', 'min:0'],
             'minimum_stock' => ['nullable', 'numeric', 'min:0'],
             'is_active' => ['nullable', 'boolean'],
         ], [
@@ -79,6 +89,12 @@ class ProductController extends Controller
             'unit_id.required' => 'Satuan wajib dipilih.',
             'unit_id.exists' => 'Satuan tidak valid.',
             'weight_kg.numeric' => 'Berat harus berupa angka.',
+            'harga_modal.required' => 'Harga modal wajib diisi.',
+            'harga_modal.numeric' => 'Harga modal harus berupa angka.',
+            'harga_modal.min' => 'Harga modal tidak boleh kurang dari 0.',
+            'harga_jual.required' => 'Harga jual wajib diisi.',
+            'harga_jual.numeric' => 'Harga jual harus berupa angka.',
+            'harga_jual.min' => 'Harga jual tidak boleh kurang dari 0.',
             'minimum_stock.numeric' => 'Minimum stok harus berupa angka.',
         ]);
 

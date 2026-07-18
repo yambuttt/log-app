@@ -37,6 +37,7 @@
                 <div>
                     <label class="mb-2 block text-sm font-semibold text-slate-700">Qty</label>
                     <input type="number" step="0.01" name="qty" value="{{ old('qty') }}"
+                           onkeydown="if(['e', 'E', '+', '-'].includes(event.key)) event.preventDefault();"
                            class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-900 focus:ring-4 focus:ring-emerald-100"
                            placeholder="Contoh: 10">
                     @error('qty')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror

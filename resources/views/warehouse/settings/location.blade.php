@@ -30,6 +30,7 @@
                     <label class="mb-2 block text-sm font-semibold text-slate-700">Latitude</label>
                     <input id="latitude" type="text" name="latitude"
                         value="{{ old('latitude', $warehouse->latitude ?? '-7.2575') }}"
+                        oninput="this.value = this.value.replace(/[^0-9.-]/g, '')"
                         class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none">
                 </div>
 
@@ -37,6 +38,7 @@
                     <label class="mb-2 block text-sm font-semibold text-slate-700">Longitude</label>
                     <input id="longitude" type="text" name="longitude"
                         value="{{ old('longitude', $warehouse->longitude ?? '112.7521') }}"
+                        oninput="this.value = this.value.replace(/[^0-9.-]/g, '')"
                         class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none">
                 </div>
             </div>

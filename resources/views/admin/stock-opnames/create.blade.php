@@ -87,6 +87,7 @@
                         id="physical_qty"
                         name="physical_qty"
                         value="{{ old('physical_qty') }}"
+                        onkeydown="if(['e', 'E', '+', '-'].includes(event.key)) event.preventDefault();"
                         class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-slate-900 focus:ring-4 focus:ring-slate-200"
                         placeholder="Contoh: 8"
                     >

@@ -37,7 +37,7 @@ class UserController extends Controller
             'password' => ['required', 'string', 'min:6', 'confirmed'],
             'role' => ['required', 'in:admin,warehouse,driver'],
             'warehouse_id' => ['nullable', 'exists:warehouses,id'],
-            'phone' => ['nullable', 'string', 'max:50'],
+            'phone' => ['nullable', 'regex:/^[0-9]+$/', 'max:50'],
             'is_active' => ['nullable', 'boolean'],
             'license_number' => ['nullable', 'string', 'max:255'],
             'address' => ['nullable', 'string'],
@@ -49,6 +49,7 @@ class UserController extends Controller
             'password.required' => 'Password wajib diisi.',
             'password.confirmed' => 'Konfirmasi password tidak sama.',
             'role.required' => 'Role wajib dipilih.',
+            'phone.regex' => 'Nomor HP hanya boleh berisi angka.',
         ]);
 
         if ($validated['role'] === 'warehouse' && empty($validated['warehouse_id'])) {
@@ -99,13 +100,14 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'role' => ['required', 'in:admin,warehouse,driver'],
             'warehouse_id' => ['nullable', 'exists:warehouses,id'],
-            'phone' => ['nullable', 'string', 'max:50'],
+            'phone' => ['nullable', 'regex:/^[0-9]+$/', 'max:50'],
             'is_active' => ['nullable', 'boolean'],
             'license_number' => ['nullable', 'string', 'max:255'],
             'address' => ['nullable', 'string'],
         ], [
             'name.required' => 'Nama wajib diisi.',
             'role.required' => 'Role wajib dipilih.',
+            'phone.regex' => 'Nomor HP hanya boleh berisi angka.',
         ]);
 
         if ($validated['role'] === 'warehouse' && empty($validated['warehouse_id'])) {

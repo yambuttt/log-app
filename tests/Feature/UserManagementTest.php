@@ -103,4 +103,21 @@ class UserManagementTest extends TestCase
         $response2->assertRedirect(route('login'));
         $this->assertFalse(auth()->check());
     }
+
+    public function test_user_phone_validation_rejects_alphabets(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'is_active' => true]);
+
+        $response = $this->actingAs($admin)
+            ->post(route('admin.users.store'), [
+                'name' => 'Test User',
+                'email' => 'phoneinvalid@example.com',
+                'password' => 'password123',
+                'password_confirmation' => 'password123',
+                'role' => 'admin',
+                'phone' => '0812abc345',
+            ]);
+
+        $response->assertSessionHasErrors('phone');
+    }
 }

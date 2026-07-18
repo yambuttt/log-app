@@ -37,6 +37,9 @@
                         <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Nama</th>
                         <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">SKU</th>
                         <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Satuan</th>
+                        <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Harga Modal</th>
+                        <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Harga Jual</th>
+                        <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Profit (Margin)</th>
                         <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Berat</th>
                         <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Min. Stok</th>
                         <th class="px-4 py-2 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Status</th>
@@ -54,6 +57,24 @@
                             </td>
                             <td class="px-4 py-4 text-sm text-slate-600">
                                 {{ $product->unit->name ?? '-' }}
+                            </td>
+                            <td class="px-4 py-4 text-sm text-slate-700 font-medium">
+                                Rp {{ number_format($product->harga_modal, 0, ',', '.') }}
+                            </td>
+                            <td class="px-4 py-4 text-sm text-slate-700 font-medium">
+                                Rp {{ number_format($product->harga_jual, 0, ',', '.') }}
+                            </td>
+                            <td class="px-4 py-4 text-sm text-slate-600">
+                                @if($product->harga_jual > 0)
+                                    <div class="font-semibold text-slate-950">
+                                        Rp {{ number_format($product->keuntungan, 0, ',', '.') }}
+                                    </div>
+                                    <div class="text-xs font-bold {{ $product->margin >= 20 ? 'text-emerald-600' : ($product->margin > 0 ? 'text-blue-600' : 'text-slate-500') }}">
+                                        {{ number_format($product->margin, 2, ',', '.') }}%
+                                    </div>
+                                @else
+                                    <span class="text-slate-400">-</span>
+                                @endif
                             </td>
                             <td class="px-4 py-4 text-sm text-slate-600">
                                 {{ $product->weight_kg ? rtrim(rtrim(number_format($product->weight_kg, 2, '.', ''), '0'), '.') . ' Kg' : '-' }}
@@ -83,7 +104,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-4 py-10 text-center text-sm text-slate-500">
+                            <td colspan="10" class="px-4 py-10 text-center text-sm text-slate-500">
                                 Belum ada data barang.
                             </td>
                         </tr>
