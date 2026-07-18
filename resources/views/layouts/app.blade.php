@@ -93,13 +93,13 @@
 
                     <nav class="space-y-2">
                         <a href="{{ route('admin.dashboard') }}"
-                            class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('dashboard') ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                            class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.dashboard') ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
                             <span class="text-lg">🏠</span>
                             <span>Dashboard</span>
                         </a>
 
                         <a href="{{ route('admin.products.index') }}"
-                            class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-slate-300 transition hover:bg-white/10 hover:text-white">
+                            class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.products.*') ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
                             <span class="text-lg">📦</span>
                             <span>Master Barang</span>
                         </a>
@@ -262,7 +262,7 @@
             <div class="flex-1 overflow-y-auto px-4 py-6">
                 <nav class="space-y-2">
                     <a href="{{ route('admin.dashboard') }}"
-                        class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('dashboard') ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                        class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.dashboard') ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
                         <span class="text-lg">🏠</span>
                         <span>Dashboard</span>
                     </a>
