@@ -85,4 +85,63 @@ class UserController extends Controller
             ->route('admin.users.index')
             ->with('success', 'User berhasil ditambahkan.');
     }
+
+    public function edit(User $user): View
+    {
+        $warehouses = Warehouse::where('is_active', true)->orderBy('name')->get();
+
+        return view('admin.users.edit', compact('user', 'warehouses'));
+    }
+
+    public function update(Request $request, User $user): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'role' => ['required', 'in:admin,warehouse,driver'],
+            'warehouse_id' => ['nullable', 'exists:warehouses,id'],
+            'phone' => ['nullable', 'string', 'max:50'],
+            'is_active' => ['nullable', 'boolean'],
+            'license_number' => ['nullable', 'string', 'max:255'],
+            'address' => ['nullable', 'string'],
+        ], [
+            'name.required' => 'Nama wajib diisi.',
+            'role.required' => 'Role wajib dipilih.',
+        ]);
+
+        if ($validated['role'] === 'warehouse' && empty($validated['warehouse_id'])) {
+            return back()
+                ->withErrors(['warehouse_id' => 'User gudang wajib memilih gudang.'])
+                ->withInput();
+        }
+
+        if ($validated['role'] !== 'warehouse') {
+            $validated['warehouse_id'] = null;
+        }
+
+        DB::transaction(function () use ($validated, $request, $user) {
+            $user->update([
+                'name' => $validated['name'],
+                'role' => $validated['role'],
+                'warehouse_id' => $validated['warehouse_id'] ?? null,
+                'phone' => $validated['phone'] ?? null,
+                'is_active' => $request->boolean('is_active'),
+            ]);
+
+            if ($validated['role'] === 'driver') {
+                $user->driverProfile()->updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'license_number' => $validated['license_number'] ?? null,
+                        'address' => $validated['address'] ?? null,
+                    ]
+                );
+            } else {
+                $user->driverProfile()->delete();
+            }
+        });
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'User berhasil diperbarui.');
+    }
 }

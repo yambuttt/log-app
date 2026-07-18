@@ -16,6 +16,13 @@ class EnsureUserRole
             return redirect()->route('login');
         }
 
+        if (! $user->is_active) {
+            auth()->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect()->route('login')->withErrors(['email' => 'Akun Anda dinonaktifkan.']);
+        }
+
         if (! in_array($user->role, $roles, true)) {
             return match ($user->role) {
                 'admin' => redirect()->route('admin.dashboard'),

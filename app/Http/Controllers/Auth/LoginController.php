@@ -36,8 +36,19 @@ class LoginController extends Controller
                 ->onlyInput('email');
         }
 
-        $request->session()->regenerate();
         $user = Auth::user();
+        if (!$user->is_active) {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return back()
+                ->withErrors([
+                    'email' => 'Akun Anda dinonaktifkan.',
+                ])
+                ->onlyInput('email');
+        }
+
+        $request->session()->regenerate();
 
         return match ($user->role) {
             'admin' => redirect()->route('admin.dashboard'),
