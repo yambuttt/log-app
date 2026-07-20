@@ -18,19 +18,19 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div class="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
                         <p class="text-sm text-emerald-100">Total SKU</p>
-                        <h3 class="mt-2 text-3xl font-bold">320</h3>
+                        <h3 class="mt-2 text-3xl font-bold">{{ $totalSku }}</h3>
                     </div>
                     <div class="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
                         <p class="text-sm text-emerald-100">Stok Rendah</p>
-                        <h3 class="mt-2 text-3xl font-bold">14</h3>
+                        <h3 class="mt-2 text-3xl font-bold">{{ $lowStockCount }}</h3>
                     </div>
                     <div class="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
                         <p class="text-sm text-emerald-100">Barang Masuk</p>
-                        <h3 class="mt-2 text-3xl font-bold">58</h3>
+                        <h3 class="mt-2 text-3xl font-bold">{{ (float) $barangMasukToday }}</h3>
                     </div>
                     <div class="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
                         <p class="text-sm text-emerald-100">Siap Kirim</p>
-                        <h3 class="mt-2 text-3xl font-bold">27</h3>
+                        <h3 class="mt-2 text-3xl font-bold">{{ $siapKirimCount }}</h3>
                     </div>
                 </div>
             </div>
@@ -45,19 +45,19 @@
             <div class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 <div class="rounded-2xl border border-slate-200 bg-white p-5">
                     <p class="text-sm text-slate-500">Receiving</p>
-                    <h4 class="mt-2 text-2xl font-bold text-slate-900">22</h4>
+                    <h4 class="mt-2 text-2xl font-bold text-slate-900">{{ $receivingCount }}</h4>
                 </div>
                 <div class="rounded-2xl border border-slate-200 bg-white p-5">
                     <p class="text-sm text-slate-500">Putaway</p>
-                    <h4 class="mt-2 text-2xl font-bold text-slate-900">18</h4>
+                    <h4 class="mt-2 text-2xl font-bold text-slate-900">{{ $putawayCount }}</h4>
                 </div>
                 <div class="rounded-2xl border border-slate-200 bg-white p-5">
                     <p class="text-sm text-slate-500">Picking</p>
-                    <h4 class="mt-2 text-2xl font-bold text-slate-900">31</h4>
+                    <h4 class="mt-2 text-2xl font-bold text-slate-900">{{ $pickingCount }}</h4>
                 </div>
                 <div class="rounded-2xl border border-slate-200 bg-white p-5">
                     <p class="text-sm text-slate-500">Packing</p>
-                    <h4 class="mt-2 text-2xl font-bold text-slate-900">19</h4>
+                    <h4 class="mt-2 text-2xl font-bold text-slate-900">{{ $packingCount }}</h4>
                 </div>
             </div>
         </div>
@@ -65,21 +65,21 @@
         <div class="glass-panel rounded-[24px] border border-white/50 p-6 shadow-lg">
             <h3 class="text-lg font-bold text-slate-900">Aksi Cepat</h3>
             <div class="mt-6 space-y-3">
-                <a href="#" class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 hover:shadow-md">
+                <a href="{{ route('warehouse.goods-receipts.create') }}" class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 hover:shadow-md transition hover:-translate-y-0.5">
                     <div>
                         <p class="font-semibold text-slate-900">Input Barang Masuk</p>
                         <p class="text-sm text-slate-500">Catat receiving</p>
                     </div>
                     <span>→</span>
                 </a>
-                <a href="#" class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 hover:shadow-md">
+                <a href="{{ route('warehouse.stock-opnames.create') }}" class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 hover:shadow-md transition hover:-translate-y-0.5">
                     <div>
                         <p class="font-semibold text-slate-900">Update Stok</p>
                         <p class="text-sm text-slate-500">Perbarui kuantitas</p>
                     </div>
                     <span>→</span>
                 </a>
-                <a href="#" class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 hover:shadow-md">
+                <a href="{{ route('warehouse.shipments.create') }}" class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 hover:shadow-md transition hover:-translate-y-0.5">
                     <div>
                         <p class="font-semibold text-slate-900">Siapkan Pengiriman</p>
                         <p class="text-sm text-slate-500">Picking dan packing</p>

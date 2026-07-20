@@ -109,7 +109,7 @@
                         📦
                     </div>
                     <p class="text-sm text-slate-500">Barang Masuk</p>
-                    <h4 class="mt-1 text-2xl font-bold text-slate-900">124</h4>
+                    <h4 class="mt-1 text-2xl font-bold text-slate-900">{{ (float) $barangMasukToday }}</h4>
                 </div>
 
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-1 hover:shadow-lg">
@@ -117,7 +117,7 @@
                         🚚
                     </div>
                     <p class="text-sm text-slate-500">Siap Kirim</p>
-                    <h4 class="mt-1 text-2xl font-bold text-slate-900">21</h4>
+                    <h4 class="mt-1 text-2xl font-bold text-slate-900">{{ $siapKirimCount }}</h4>
                 </div>
 
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-1 hover:shadow-lg">
@@ -125,7 +125,7 @@
                         ✅
                     </div>
                     <p class="text-sm text-slate-500">Terkirim</p>
-                    <h4 class="mt-1 text-2xl font-bold text-slate-900">17</h4>
+                    <h4 class="mt-1 text-2xl font-bold text-slate-900">{{ $terkirimCount }}</h4>
                 </div>
 
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-1 hover:shadow-lg">
@@ -133,7 +133,7 @@
                         ⚠️
                     </div>
                     <p class="text-sm text-slate-500">Pending</p>
-                    <h4 class="mt-1 text-2xl font-bold text-slate-900">4</h4>
+                    <h4 class="mt-1 text-2xl font-bold text-slate-900">{{ $pendingCount }}</h4>
                 </div>
             </div>
         </div>
@@ -145,7 +145,7 @@
             </div>
 
             <div class="space-y-3">
-                <a href="#" class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
+                <a href="{{ route('admin.products.create') }}" class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
                     <div>
                         <p class="font-semibold text-slate-900">Tambah Barang</p>
                         <p class="text-sm text-slate-500">Input produk baru</p>
@@ -153,7 +153,7 @@
                     <span class="text-slate-400">→</span>
                 </a>
 
-                <a href="#" class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
+                <a href="{{ route('admin.goods-receipts.create') }}" class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
                     <div>
                         <p class="font-semibold text-slate-900">Stok Masuk</p>
                         <p class="text-sm text-slate-500">Catat barang masuk</p>
@@ -161,7 +161,7 @@
                     <span class="text-slate-400">→</span>
                 </a>
 
-                <a href="#" class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
+                <a href="{{ route('admin.delivery-trips.index') }}" class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
                     <div>
                         <p class="font-semibold text-slate-900">Buat Pengiriman</p>
                         <p class="text-sm text-slate-500">Atur pesanan keluar</p>
@@ -169,7 +169,7 @@
                     <span class="text-slate-400">→</span>
                 </a>
 
-                <a href="#" class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
+                <a href="{{ route('admin.users.index') }}" class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
                     <div>
                         <p class="font-semibold text-slate-900">Kelola Driver</p>
                         <p class="text-sm text-slate-500">Monitor tim pengiriman</p>
@@ -190,35 +190,29 @@
             </div>
 
             <div class="space-y-4">
-                <div class="flex items-start justify-between rounded-2xl border border-slate-200 bg-white p-4">
-                    <div>
-                        <p class="font-semibold text-slate-900">INV-2026-001</p>
-                        <p class="mt-1 text-sm text-slate-500">Driver: Budi Santoso</p>
+                @forelse ($recentShipments as $shipment)
+                    <div class="flex items-start justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                        <div>
+                            <p class="font-semibold text-slate-900">{{ $shipment->shipment_number }}</p>
+                            <p class="mt-1 text-sm text-slate-500">
+                                Sopir: <span class="font-medium text-slate-800">{{ $shipment->driver->name ?? 'Belum Ditunjuk' }}</span>
+                            </p>
+                            <p class="text-xs text-slate-400 mt-0.5">Tujuan: {{ $shipment->order->customer_name ?? '-' }}</p>
+                        </div>
+                        <span class="rounded-full px-3 py-1 text-xs font-semibold 
+                            {{ $shipment->status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 
+                               ($shipment->status === 'on_delivery' ? 'bg-amber-100 text-amber-700' : 
+                               ($shipment->status === 'assigned' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-700')) }}">
+                            {{ $shipment->status === 'completed' ? 'Terkirim' : 
+                               ($shipment->status === 'on_delivery' ? 'Dalam Perjalanan' : 
+                               ($shipment->status === 'assigned' ? 'Ditugaskan' : 'Pending')) }}
+                        </span>
                     </div>
-                    <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                        Dalam Perjalanan
-                    </span>
-                </div>
-
-                <div class="flex items-start justify-between rounded-2xl border border-slate-200 bg-white p-4">
-                    <div>
-                        <p class="font-semibold text-slate-900">INV-2026-002</p>
-                        <p class="mt-1 text-sm text-slate-500">Driver: Andi Pratama</p>
+                @empty
+                    <div class="text-center text-sm text-slate-500 py-8 bg-white/50 rounded-2xl border border-dashed border-slate-200">
+                        Belum ada data pengiriman terbaru.
                     </div>
-                    <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
-                        Terkirim
-                    </span>
-                </div>
-
-                <div class="flex items-start justify-between rounded-2xl border border-slate-200 bg-white p-4">
-                    <div>
-                        <p class="font-semibold text-slate-900">INV-2026-003</p>
-                        <p class="mt-1 text-sm text-slate-500">Driver: Rian Saputra</p>
-                    </div>
-                    <span class="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-700">
-                        Disiapkan
-                    </span>
-                </div>
+                @endforelse
             </div>
         </div>
 
@@ -252,10 +246,10 @@
                 <div class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4">
                     <div>
                         <p class="font-semibold text-slate-900">Pengguna Login</p>
-                        <p class="text-sm text-slate-500">Admin dan staff aktif hari ini</p>
+                        <p class="text-sm text-slate-500">Total pengguna dalam sistem</p>
                     </div>
                     <span class="rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700">
-                        14 User
+                        {{ $totalUsers }} User
                     </span>
                 </div>
             </div>

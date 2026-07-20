@@ -158,6 +158,12 @@
                             <span>Delivery Trips</span>
                         </a>
 
+                        <a href="{{ route('admin.sales.index') }}"
+                            class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.sales.*') ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                            <span class="text-lg">💰</span>
+                            <span>Laporan Penjualan</span>
+                        </a>
+
                         <a href="{{ route('admin.users.index') }}"
                             class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.users.*') ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
                             <span class="text-lg">👤</span>
@@ -325,6 +331,12 @@
                         class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.delivery-trips.*') ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
                         <span class="text-lg">🛣️</span>
                         <span>Delivery Trips</span>
+                    </a>
+
+                    <a href="{{ route('admin.sales.index') }}"
+                        class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.sales.*') ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                        <span class="text-lg">💰</span>
+                        <span>Laporan Penjualan</span>
                     </a>
 
                     <a href="{{ route('admin.users.index') }}"

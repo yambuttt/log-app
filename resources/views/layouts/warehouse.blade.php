@@ -98,6 +98,10 @@
                             class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.orders.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
                             <span>🧾</span><span>Pesanan</span>
                         </a>
+                        <a href="{{ route('warehouse.sales.index') }}"
+                            class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.sales.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                            <span>💰</span><span>Laporan Penjualan</span>
+                        </a>
                         <a href="{{ route('warehouse.delivery-trips.index') }}"
                             class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.delivery-trips.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
                             <span>🛣️</span><span>Delivery Trips</span>
@@ -202,6 +206,10 @@
                     <a href="{{ route('warehouse.orders.index') }}"
                         class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.orders.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
                         <span>🧾</span><span>Pesanan</span>
+                    </a>
+                    <a href="{{ route('warehouse.sales.index') }}"
+                        class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.sales.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">
+                        <span>💰</span><span>Laporan Penjualan</span>
                     </a>
                     <a href="{{ route('warehouse.delivery-trips.index') }}"
                         class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('warehouse.delivery-trips.*') ? 'bg-white text-emerald-950 shadow-lg' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}">

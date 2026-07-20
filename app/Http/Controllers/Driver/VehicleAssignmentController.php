@@ -20,7 +20,13 @@ class VehicleAssignmentController extends Controller
             ->where('assignment_date', $today)
             ->first();
 
+        // Cari kendaraan yang sudah dipilih driver lain hari ini
+        $assignedVehicleIds = DriverVehicleAssignment::where('assignment_date', $today)
+            ->where('driver_user_id', '!=', auth()->id())
+            ->pluck('vehicle_id');
+
         $vehicles = Vehicle::where('is_active', true)
+            ->whereNotIn('id', $assignedVehicleIds)
             ->orderBy('name')
             ->get();
 
@@ -36,6 +42,18 @@ class VehicleAssignmentController extends Controller
             'vehicle_id.required' => 'Kendaraan wajib dipilih.',
             'vehicle_id.exists' => 'Kendaraan tidak valid.',
         ]);
+
+        // Validasi double assignment jika ada driver lain yang duluan memilih kendaraan ini hari ini
+        $alreadyAssigned = DriverVehicleAssignment::where('assignment_date', now()->toDateString())
+            ->where('vehicle_id', $validated['vehicle_id'])
+            ->where('driver_user_id', '!=', auth()->id())
+            ->exists();
+
+        if ($alreadyAssigned) {
+            return back()
+                ->withErrors(['vehicle_id' => 'Kendaraan ini sudah dipilih oleh driver lain hari ini.'])
+                ->withInput();
+        }
 
         DriverVehicleAssignment::updateOrCreate(
             [

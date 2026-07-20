@@ -72,19 +72,19 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div class="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
                             <p class="text-sm text-amber-100">Tugas Hari Ini</p>
-                            <h3 class="mt-2 text-3xl font-bold">8</h3>
+                            <h3 class="mt-2 text-3xl font-bold">{{ $tugasHariIni }}</h3>
                         </div>
                         <div class="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
                             <p class="text-sm text-amber-100">Dalam Perjalanan</p>
-                            <h3 class="mt-2 text-3xl font-bold">3</h3>
+                            <h3 class="mt-2 text-3xl font-bold">{{ $dalamPerjalananCount }}</h3>
                         </div>
                         <div class="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
                             <p class="text-sm text-amber-100">Terkirim</p>
-                            <h3 class="mt-2 text-3xl font-bold">4</h3>
+                            <h3 class="mt-2 text-3xl font-bold">{{ $terkirimCount }}</h3>
                         </div>
                         <div class="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
                             <p class="text-sm text-amber-100">Pending</p>
-                            <h3 class="mt-2 text-3xl font-bold">1</h3>
+                            <h3 class="mt-2 text-3xl font-bold">{{ $pendingCount }}</h3>
                         </div>
                     </div>
                 </div>
@@ -97,65 +97,53 @@
                 <p class="mt-1 text-sm text-slate-500">Daftar tugas utama hari ini.</p>
 
                 <div class="mt-6 space-y-4">
-                    <div class="rounded-2xl border border-slate-200 bg-white p-4">
-                        <div class="flex items-start justify-between gap-4">
-                            <div>
-                                <p class="font-semibold text-slate-900">INV-2026-010</p>
-                                <p class="mt-1 text-sm text-slate-500">Jl. Merdeka No. 21, Jakarta</p>
+                    @forelse ($activeShipments as $shipment)
+                        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                            <div class="flex items-start justify-between gap-4">
+                                <div>
+                                    <p class="font-semibold text-slate-900">{{ $shipment->shipment_number }}</p>
+                                    <p class="mt-1 text-sm text-slate-500">{{ $shipment->order->delivery_address ?? '-' }}</p>
+                                    <p class="text-xs text-slate-400 mt-0.5">Customer: {{ $shipment->order->customer_name ?? '-' }}</p>
+                                </div>
+                                <span class="rounded-full px-3 py-1 text-xs font-semibold 
+                                    {{ $shipment->status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 
+                                       ($shipment->status === 'on_delivery' ? 'bg-amber-100 text-amber-700' : 
+                                       ($shipment->status === 'assigned' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-700')) }}">
+                                    {{ $shipment->status === 'completed' ? 'Terkirim' : 
+                                       ($shipment->status === 'on_delivery' ? 'Dalam Perjalanan' : 
+                                       ($shipment->status === 'assigned' ? 'Ditugaskan' : 'Pending')) }}
+                                </span>
                             </div>
-                            <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                                Dalam Perjalanan
-                            </span>
                         </div>
-                    </div>
-
-                    <div class="rounded-2xl border border-slate-200 bg-white p-4">
-                        <div class="flex items-start justify-between gap-4">
-                            <div>
-                                <p class="font-semibold text-slate-900">INV-2026-011</p>
-                                <p class="mt-1 text-sm text-slate-500">Jl. Sudirman No. 88, Bandung</p>
-                            </div>
-                            <span class="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-700">
-                                Disiapkan
-                            </span>
+                    @empty
+                        <div class="text-center text-sm text-slate-500 py-8 bg-white/50 rounded-2xl border border-dashed border-slate-200">
+                            Belum ada tugas pengiriman aktif hari ini.
                         </div>
-                    </div>
-
-                    <div class="rounded-2xl border border-slate-200 bg-white p-4">
-                        <div class="flex items-start justify-between gap-4">
-                            <div>
-                                <p class="font-semibold text-slate-900">INV-2026-012</p>
-                                <p class="mt-1 text-sm text-slate-500">Jl. Pemuda No. 7, Bekasi</p>
-                            </div>
-                            <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
-                                Terkirim
-                            </span>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
             </div>
 
             <div class="glass-panel rounded-[24px] border border-white/50 p-6 shadow-lg">
                 <h3 class="text-lg font-bold text-slate-900">Aksi Cepat</h3>
                 <div class="mt-6 space-y-3">
-                    <a href="#"
-                        class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 hover:shadow-md">
+                    <a href="{{ route('driver.shipments.index') }}"
+                        class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 hover:shadow-md transition hover:-translate-y-0.5">
                         <div>
                             <p class="font-semibold text-slate-900">Lihat Tugas Hari Ini</p>
                             <p class="text-sm text-slate-500">Daftar pengiriman aktif</p>
                         </div>
                         <span>→</span>
                     </a>
-                    <a href="#"
-                        class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 hover:shadow-md">
+                    <a href="{{ route('driver.delivery-trips.index') }}"
+                        class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 hover:shadow-md transition hover:-translate-y-0.5">
                         <div>
                             <p class="font-semibold text-slate-900">Update Status</p>
                             <p class="text-sm text-slate-500">Perbarui perjalanan</p>
                         </div>
                         <span>→</span>
                     </a>
-                    <a href="#"
-                        class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 hover:shadow-md">
+                    <a href="{{ route('driver.shipments.index') }}"
+                        class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 hover:shadow-md transition hover:-translate-y-0.5">
                         <div>
                             <p class="font-semibold text-slate-900">Riwayat Pengiriman</p>
                             <p class="text-sm text-slate-500">Lihat tugas selesai</p>

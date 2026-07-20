@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\VehicleCapacityController;
 use App\Http\Controllers\Admin\VehicleController;
 use App\Http\Controllers\Admin\VehicleMaintenanceController;
 use App\Http\Controllers\Admin\DeliveryTripController as AdminDeliveryTripController;
+use App\Http\Controllers\Admin\SalesController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Driver\DashboardController as DriverDashboardController;
 use App\Http\Controllers\Driver\VehicleAssignmentController;
@@ -97,6 +98,7 @@ Route::middleware('auth')->group(function () {
         Route::get('vehicle-capacities/create', [VehicleCapacityController::class, 'create'])->name('vehicle-capacities.create');
         Route::post('vehicle-capacities', [VehicleCapacityController::class, 'store'])->name('vehicle-capacities.store');
         Route::get('delivery-trips', [AdminDeliveryTripController::class, 'index'])->name('delivery-trips.index');
+        Route::get('sales', [SalesController::class, 'index'])->name('sales.index');
     });
 
     Route::prefix('warehouse')->name('warehouse.')->middleware('role:warehouse')->group(function () {
@@ -120,6 +122,7 @@ Route::middleware('auth')->group(function () {
         Route::get('orders', [WarehouseOrderController::class, 'index'])->name('orders.index');
         Route::get('orders/create', [WarehouseOrderController::class, 'create'])->name('orders.create');
         Route::post('orders', [WarehouseOrderController::class, 'store'])->name('orders.store');
+        Route::get('sales', [App\Http\Controllers\Warehouse\SalesController::class, 'index'])->name('sales.index');
 
         Route::get('shipments', [WarehouseShipmentController::class, 'index'])->name('shipments.index');
         Route::get('shipments/create', [WarehouseShipmentController::class, 'create'])->name('shipments.create');
