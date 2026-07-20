@@ -25,6 +25,11 @@ class Vehicle extends Model
         ];
     }
 
+    public function maintenanceLogs(): HasMany
+    {
+        return $this->hasMany(VehicleMaintenanceLog::class)->orderBy('start_date', 'desc');
+    }
+
     public function capacities(): HasMany
     {
         return $this->hasMany(VehicleCapacity::class);
